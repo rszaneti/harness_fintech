@@ -58,6 +58,7 @@ mecânica nunca mais se repete e não consome contexto.**
 | FE-021 (mock implementado na factory do `jest.mock`) | PROMOVIDA → hook (`jest-mock-factory.py`) — a janela entre `jest.mock(` e o fecha-parênteses; grep simples não distingue a factory do `beforeEach` |
 | FE-022 (varredura por assinatura em vez de corpo) | verifier audita — conversor numérico × campo `type="number"` de Formik |
 | AG-020 (anunciar varredura sem validar o detector) | **PROMOVIDA → núcleo do `verifier.md`** — vale em toda auditoria, não depende de etiqueta. ⚠️ Vale também para a AMOSTRA: número medido sobre commit de 1.800 arquivos não descreve um diff de feature (spec 087) |
+| **AG-030** (`.gitignore` sem âncora esconde arquivo do harness do commit) | **CANDIDATA → `verify.sh harness`** (spec própria): reprovar arquivo de `.claude/` ignorado pelo git fora das exclusões declaradas. Registrada no `/finish-task` da spec 001 da plataforma de pagamentos |
 | **AG-023** (relação nova só no repositório do dono) | **era `AG-020`** até 12/09/2026 — o código estava duplicado; renumerada na spec 087. verifier audita (check `removal`) |
 | FE-010 (hook condicional) | PROMOVIDA → ESLint (rules-of-hooks) via hook |
 | FE-011 (import sem uso) | PROMOVIDA → ESLint (no-unused-vars) via hook |

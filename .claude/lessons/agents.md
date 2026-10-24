@@ -1006,3 +1006,31 @@ em seguida — que é o caso normal. O que **é** promovível é a regra de leit
 uma linha que não existe no arquivo, o relatório do gate poderia dizê-lo. Fica com o julgamento
 humano, e com o registro de que o AG-021 original — "nunca duas features ao mesmo tempo no mesmo
 workspace" — tem uma consequência mais concreta do que disputa de CPU.
+
+## AG-030 — `.gitignore` sem âncora ignora em qualquer profundidade — e nenhum gate olha o que o git rastreia
+
+**Erro real (spec 001 da plataforma de pagamentos, 2026-10-24)**: na preparação do commit inicial
+da raiz, `git status --short -uall` listava **98** arquivos onde deveria haver **183**. O
+`.gitignore` tinha `backend/` e `frontend/` (herdados do ERP) e `tools/` (acrescentado na própria
+001) **sem a barra inicial**. Padrão de diretório sem `/` no começo casa em **qualquer
+profundidade**: ficavam fora do commit os templates do scaffold (`.claude/scaffold/templates/backend/`
+e `frontend/`) e as fixtures dos hooks financeiros (`.claude/scripts/tests/<hook>/backend/api/…`).
+`git check-ignore -v` confirmou 4 de 4.
+
+**Por que é insidioso**: tudo funciona **localmente** — os arquivos existem no disco, o gate do
+harness rodou verde 14 etapas, três rodadas de `verifier` aprovaram. O defeito só aparece em outro
+clone, onde o `scaffold.py` não acha template e os self-tests dos hooks não acham fixture. E a
+intenção do padrão (ignorar o workspace na raiz) é óbvia para quem o escreveu, então ninguém relê.
+Quem pegou foi a **contagem**: 98 arquivos num commit inicial de harness é pouco.
+
+**Regra**: diretório de workspace no `.gitignore` da raiz é **sempre ancorado** (`/backend/`,
+`/frontend/`, `/tools/`). Antes de qualquer commit que acrescente arquivo ao harness, cruzar o que
+existe com o que o git vê:
+`comm -23 <(find .claude -type f -not -path "*/__pycache__/*" | sort) <(git ls-files -co --exclude-standard .claude | sort)`
+— o que sobrar tem de ser exatamente as exclusões declaradas (`_backup_*`, `gate/*.json`,
+`settings.local.json`).
+
+**Automatizável?**: **sim — candidata a etapa do `verify.sh harness`**: reprovar quando algum arquivo
+de `.claude/` (fora das exclusões declaradas) é ignorado pelo git (`git check-ignore` sobre a
+lista do `find`). Não implementada na 001 (achado durante o `/finish-task`, que não gera código); a
+promoção fica para uma spec própria.
