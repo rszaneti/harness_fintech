@@ -1,0 +1,37 @@
+# Repositório da RAIZ do monorepo: rastreia só o harness (.claude/), o CLAUDE.md
+# e a documentação. Ver documentacao/HARNESS.md.
+
+# workspaces — cada um tem .git próprio (regra 1 do CLAUDE.md; lista em .claude/workspaces.json).
+# ⚠️ ANCORADOS NA RAIZ (`/`): sem a barra inicial o padrão casa em qualquer profundidade e ignorava
+# `.claude/scaffold/templates/{backend,frontend}/` e as fixtures `.claude/scripts/tests/<hook>/backend/`
+# — o commit inicial sairia sem os templates do scaffold (achado na T-22 da spec 001).
+/backend/
+/frontend/
+/tools/
+node_modules/
+
+# local por máquina
+.claude/settings.local.json
+.claude/projects/
+# evidência do gate (verify.sh --feature) — por máquina; só o .gitkeep é versionado
+.claude/gate/*.json
+
+# gerado a partir de .claude/ — versionar duplicaria a fonte
+_harness_staging/
+_harness_staging.zip
+.claude/_backup_pre_harness_*/
+
+# harness paralelo para Codex — não é usado (decisão herdada do ERP de origem, 11/09/2026)
+.codex/
+.agents/
+AGENTS.md
+
+# temporários e arquivos soltos na raiz
+.tmp_pdfextract/
+/*.ts
+
+# Python (scaffold)
+__pycache__/
+
+# resto de download do Windows (WSL)
+*:Zone.Identifier

@@ -1,0 +1,49 @@
+{
+  "_sobre": "Casos do check `financeiro` do check-module.py (spec 001, CA-12). O módulo CORRIGIDO não é fixture versionada: é gerado na hora pelo scaffold (--append-only, ledger/zz_entries ZzEntry), para nunca divergir do template. Cada mutação abaixo é aplicada SOZINHA sobre uma cópia dele e tem de produzir o achado de `code` — e o corrigido, nenhum achado bloqueante.",
+  "entity": "ZzEntry",
+  "contexto": "ledger",
+  "modulo": "zz_entries",
+  "mutacoes": [
+    {
+      "desc": "numeric na entity (dinheiro fracionário)",
+      "file": "infra/typeorm/entities/ZzEntry.ts",
+      "find": "@Column('varchar')\n  name: string",
+      "replace": "@Column('numeric', { precision: 12, scale: 2 })\n  amount: number",
+      "code": "RN-11"
+    },
+    {
+      "desc": "save( no repositório append-only",
+      "file": "infra/typeorm/repositories/ZzEntryRepository.ts",
+      "find": "return this.ormRepository.create(result.raw[0] as ZzEntry)",
+      "replace": "return this.ormRepository.save(result.raw[0] as ZzEntry)",
+      "code": "RN-12"
+    },
+    {
+      "desc": "POST sem ensureIdempotency",
+      "file": "infra/http/routes/zzentries.routes.ts",
+      "find": "  ensureIdempotency,\n",
+      "replace": "",
+      "code": "RN-13"
+    },
+    {
+      "desc": "service de Update num módulo append-only",
+      "new_file": "services/UpdateZzEntryService.ts",
+      "content": "export default class UpdateZzEntryService {}\n",
+      "code": "RN-09"
+    },
+    {
+      "desc": "migration da tabela sem a trigger reject_mutation()",
+      "file": "@migration",
+      "find": "reject_mutation",
+      "replace": "sem_trigger",
+      "code": "RN-09"
+    },
+    {
+      "desc": "numeric na MIGRATION (o modo pasta tem de enxergá-la)",
+      "file": "@migration",
+      "find": "type: 'bool',",
+      "replace": "type: 'numeric',",
+      "code": "RN-11"
+    }
+  ]
+}

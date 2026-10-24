@@ -1,0 +1,77 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn:*)",
+      "Bash(yarn build:*)",
+      "Bash(yarn test:*)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn typecheck:*)",
+      "Bash(npx typeorm migration:create:*)",
+      "Bash(npx typeorm migration:run:*)",
+      "Bash(npx typeorm migration:revert:*)",
+      "Bash(bash .claude/scripts/verify.sh:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git mv:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(yarn *)",
+      "Bash(git *)",
+      "Bash(npx tsc *)",
+      "Edit",
+      "Write"
+    ],
+    "deny": [
+      "Bash(npm:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git checkout:*)",
+      "Bash(git restore:*)",
+      "Bash(git stash:*)",
+      "Bash(DROP TABLE:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-migrations.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-shell-write-ts.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-check.sh\"",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

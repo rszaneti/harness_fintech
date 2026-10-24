@@ -1,0 +1,6 @@
+{
+  "backend": { "path": "backend/api", "kind": "backend", "spec": "002" },
+  "operador": { "path": "frontend/operador", "kind": "frontend", "spec": "010" },
+  "cliente": { "path": "frontend/cliente", "kind": "frontend", "spec": "011" },
+  "simulator": { "path": "tools/btg-simulator", "kind": "backend", "spec": "004" }
+}
